@@ -34,23 +34,23 @@ function arrayObjectOptimization(data) {
   const result = []
 
   for (const item of data) {
+    const isObjectItem = (typeof item === 'object') && (!Array.isArray(item))
     let optimizedItem = {}
+
+    if(!isObjectItem) throw new Error('Only accepting object data')
 
     for (const prop in item) {
       const isNull = item[prop] === null
       const isUndefined = typeof item[prop] === 'undefined'
       const isArray = Array.isArray(item[prop])
 
-      if (isArray) {
-        arrayObjectOptimization(item[prop])
-      }
-
+      if (isArray) arrayObjectOptimization(item[prop])
       if (isNull || isUndefined) delete item[prop]
+      
       optimizedItem = { ...optimizedItem, ...item }
     }
     result.push(optimizedItem)
   }
-
   return result
 }
 
